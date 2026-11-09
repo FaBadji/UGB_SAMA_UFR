@@ -1,0 +1,111 @@
+<header class="site-header">
+  <a class="brand" href="#accueil" aria-label="SAMA UFR, accueil">
+    <img src="/images/sama-ufr-logo.png" alt="SAMA UFR" />
+  </a>
+  <nav aria-label="Navigation principale">
+    <a href="#accueil">Accueil <span aria-hidden="true">⌄</span></a>
+    <a href="#mission">À propos <span aria-hidden="true">⌄</span></a>
+    <a href="#contact">Contact <span aria-hidden="true">⌄</span></a>
+  </nav>
+  <a class="header-space" routerLink="/dashboard">Mon espace</a>
+</header>
+
+<main>
+  <section class="hero" id="accueil">
+    <div class="hero-content">
+      <h1>Bienvenue à<br />l’UFR SAT</h1>
+      <p>Retrouvez tous les résultats en un seul endroit</p>
+      <a class="button hero-button" routerLink="/inscription">S’inscrire</a>
+    </div>
+  </section>
+
+  <section class="results" id="resultats">
+    <div class="results-copy">
+      <h2>Vos<br />résultats</h2>
+      <p>Retrouvez tous vos résultats d’examens et de devoirs,<br class="desktop-break" /> mais également les délibérations</p>
+      <svg class="results-arrow" viewBox="0 0 170 150" fill="none" aria-hidden="true">
+        <path d="M22 8c-5 53 24 83 92 87M114 95c-24-5-39-21-46-40m46 40c-17 8-29 20-37 38" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+      </svg>
+      <a class="space-cta" href="#contact">Mon espace</a>
+    </div>
+    <div class="results-collage" aria-hidden="true">
+      <div class="collage-photo collage-photo-one">
+        <img src="/images/campus-angle.jpg" alt="Bâtiments et jardins du campus de l’UGB" />
+      </div>
+      <div class="collage-photo collage-photo-two">
+        <img src="/images/campus-palmiers.jpg" alt="Allée bordée de palmiers sur le campus de l’UGB" />
+      </div>
+      <div class="calendar-card">
+        <div class="calendar-top">EXAMENS &amp; DÉLIBÉRATIONS</div>
+        <div class="calendar-days">
+          <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+          <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+          <span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span>
+        </div>
+      </div>
+      <div class="clock-card"><span>UFR SAT</span><strong>12:30</strong><i></i></div>
+    </div>
+  </section>
+
+  <section class="archives" id="archives">
+    <div class="archives-title">
+      <h2>Explorez les archives<br />d’anciens résultats</h2>
+      <a href="#resultats">en savoir plus</a>
+    </div>
+    <p class="archives-copy">Vous avez perdu vos anciens résultats et vous souhaitez les revoir, pas de panique, chez UGB result, récupérer tous vos résultats de devoirs et d’examens quelque soit l’année et la filière</p>
+    <figure class="archives-photo">
+      <img src="/images/campus-angle.jpg" alt="Bâtiment de l’Université Gaston Berger à Saint-Louis" />
+    </figure>
+  </section>
+
+  <section class="mission" id="mission">
+    <figure class="mission-photo">
+      <img src="/images/cour-interieure.png" alt="Passage et jardins du campus de l’Université Gaston Berger" />
+      <span class="student-count"><strong>15+</strong><span>ont rejoints</span></span>
+      <span class="play-mark" aria-hidden="true">▶</span>
+    </figure>
+    <div class="mission-copy">
+      <p class="eyebrow">À PROPOS</p>
+      <h2>Notre Mission</h2>
+      <p>faciliter l’accès aux résultats d’examens et de devoir des étudiants dans n’importe quelle filière et niveau d’étude</p>
+      <ul>
+        <li>emploi du temps en temps réel</li>
+        <li>notes par matière et grand jury</li>
+        <li>téléchargement pdf sécurisé</li>
+        <li>accessible sur mobile et pc</li>
+      </ul>
+      <a class="mission-button" href="#contact">Découvrir</a>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2>Contactez - Nous</h2>
+    <span class="contact-rule" aria-hidden="true"></span>
+    <p>Pour toute question relative à la plateforme, vous pouvez<br class="desktop-break" /> nous contactez via le formulaire ci dessous</p>
+    <form class="contact-form" (submit)="submitContact($event)">
+      <div class="form-row">
+        <label>
+          <span>Prénom</span>
+          <input name="prenom" autocomplete="given-name" placeholder="Prenom" required />
+        </label>
+        <label>
+          <span>Nom</span>
+          <input name="nom" autocomplete="family-name" placeholder="Nom" required />
+        </label>
+      </div>
+      <label>
+        <span>Email</span>
+        <input type="email" name="email" autocomplete="email" placeholder="Email" required />
+      </label>
+      <label>
+        <span>Message</span>
+        <textarea name="message" rows="5" placeholder="Message" required></textarea>
+      </label>
+      <div class="form-footer">
+        <p class="form-status" aria-live="polite">{{ contactMessage }}</p>
+        <button type="submit">Envoyer</button>
+      </div>
+    </form>
+  </section>
+</main>

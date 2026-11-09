@@ -1,0 +1,27 @@
+<main class="login-page">
+  <div class="login-scene">
+    <div class="top-campus" aria-hidden="true"></div>
+    <section class="login-layout">
+      <div class="login-photo-side">
+        <div class="login-intro">
+          <h1>Mon espace</h1>
+          <p>Accedez a votre espace personnel et soyez au courant de toute sortie de résultat ou d'emploi de temps</p>
+        </div>
+      </div>
+      <div class="login-form-side">
+        <form class="login-form" (submit)="login($event)">
+          <img class="login-logo" src="/images/sama-ufr-logo.png" alt="SAMA UFR" />
+          <h2>Connexion</h2>
+          <label class="sr-only" for="login-email">Email</label>
+          <input id="login-email" type="email" name="email" autocomplete="email" placeholder="Email" required />
+          <label class="sr-only" for="login-password">Mot de passe</label>
+          <input id="login-password" type="password" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
+          <button type="submit">Connexion</button>
+          <p class="login-message" aria-live="polite">{{ message }}</p>
+        </form>
+        <p class="register-prompt">Pas de compte ? <a routerLink="/inscription">Inscription</a></p>
+      </div>
+    </section>
+    <div class="bottom-campus" aria-hidden="true"></div>
+  </div>
+</main>

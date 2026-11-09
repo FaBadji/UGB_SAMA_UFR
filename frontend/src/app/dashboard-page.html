@@ -1,0 +1,87 @@
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <a class="dashboard-brand" routerLink="/" aria-label="SAMA UFR, accueil">
+      <img src="/images/sama-ufr-logo.png" alt="SAMA UFR" />
+    </a>
+
+    <nav class="dashboard-nav" aria-label="Navigation principale">
+      <a class="active" href="#accueil">Accueil</a>
+      <a routerLink="/emploi-du-temps">Schedule</a>
+      <a href="#resultats">Résultats</a>
+      <a href="#archives">Archives</a>
+    </nav>
+
+    <div class="dashboard-account">
+      <button class="notification-button" type="button" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+        </svg>
+      </button>
+      <span class="account-avatar" aria-label="Fatou Ba">FB</span>
+      <a class="logout-button" routerLink="/connexion" aria-label="Se déconnecter">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 17l5-5-5-5M15 12H3M21 3v18" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <div class="dashboard-content" id="accueil">
+    <section class="welcome-banner" aria-label="Bienvenue">
+      <h1>Bienvenue , Fatou</h1>
+      <p>UFR SAT</p>
+    </section>
+
+    <section class="dashboard-intro" aria-labelledby="dashboard-title">
+      <h2 id="dashboard-title">Retrouvez facilement vos<br /><span>résultats en un instant</span></h2>
+      <span class="intro-rule" aria-hidden="true"></span>
+      <p>Dans la section de votre choix , il suffit d’appliquer le filtre complet</p>
+    </section>
+
+    <section class="filter-options" aria-label="Filtres de recherche">
+      <a class="filter-option" href="#resultats">
+        <span class="filter-number">01</span>
+        <span class="filter-copy"><strong>Par niveau</strong><small>vous sélectionnez votre niveau d’étude</small></span>
+      </a>
+      <a class="filter-option" href="#resultats">
+        <span class="filter-number">02</span>
+        <span class="filter-copy"><strong>Par filière</strong><small>dans quel filière êtes-vous</small></span>
+      </a>
+      <a class="filter-option filter-option-wide" href="#resultats">
+        <span class="filter-number">03</span>
+        <span class="filter-copy"><strong>Par matière</strong><small>La matière que vous cherchez</small></span>
+      </a>
+    </section>
+
+    <section class="quick-actions" aria-label="Accès rapides">
+      <h2>Passez à l’action</h2>
+      <div class="action-cards">
+        <a class="action-card schedule-card" id="emploi-du-temps" routerLink="/emploi-du-temps">
+          <span class="action-details">
+            <small>consulté le 11/04</small>
+            <span>Emploi du temps</span>
+            <strong>5 <small>disponibles</small></strong>
+          </span>
+          <svg class="action-icon book-icon" viewBox="0 0 56 48" aria-hidden="true">
+            <path d="M4 10c8-3 16-2 22 3v29c-6-5-14-6-22-3V10zm48 0c-8-3-16-2-22 3v29c6-5 14-6 22-3V10z" />
+            <path d="M28 13v29" />
+          </svg>
+        </a>
+        <a class="action-card results-card" id="resultats" href="#resultats">
+          <span class="action-details">
+            <small>consulté le 11/04</small>
+            <span>Résultat examens</span>
+            <strong>12 <small>disponibles</small></strong>
+          </span>
+          <svg class="action-icon result-icon" viewBox="0 0 56 48" aria-hidden="true">
+            <rect x="2" y="3" width="52" height="42" rx="6" />
+            <circle cx="18" cy="17" r="6" />
+            <path d="M7 36c1-7 5-10 11-10s10 3 11 10M35 15h13M35 23h13M35 31h13" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <a class="dashboard-more" id="archives" href="#archives">en savoir plus</a>
+  </div>
+</main>

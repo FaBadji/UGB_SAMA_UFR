@@ -1,0 +1,106 @@
+<main class="schedule-page">
+  <header class="schedule-header">
+    <a class="schedule-brand" routerLink="/dashboard" aria-label="SAMA UFR, tableau de bord">
+      <img src="/images/sama-ufr-logo.png" alt="SAMA UFR" />
+    </a>
+
+    <nav class="schedule-nav" aria-label="Navigation principale">
+      <a routerLink="/dashboard">Accueil</a>
+      <a class="active" routerLink="/emploi-du-temps">Schedule</a>
+      <a routerLink="/dashboard" fragment="resultats">Résultats</a>
+      <a routerLink="/dashboard" fragment="archives">Archives</a>
+    </nav>
+
+    <div class="schedule-account">
+      <button class="schedule-notifications" type="button" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+        </svg>
+      </button>
+      <span class="schedule-avatar" aria-label="Fatou Ba">FB</span>
+      <a class="schedule-logout" routerLink="/connexion" aria-label="Se déconnecter">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 17l5-5-5-5M15 12H3M21 3v18" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <section class="schedule-content" aria-labelledby="schedule-title">
+    <div class="schedule-heading">
+      <a routerLink="/dashboard" class="back-link" aria-label="Retour au tableau de bord">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12H5m7 7-7-7 7-7" />
+        </svg>
+      </a>
+      <h1 id="schedule-title">Emploi du temps</h1>
+    </div>
+
+    <form class="schedule-filters" (submit)="search($event)">
+      <label class="sr-only" for="schedule-level">Niveau</label>
+      <select id="schedule-level" name="niveau">
+        <option value="">Niveau</option>
+        <option value="Licence 1" selected>Licence 1</option>
+        <option value="Licence 2">Licence 2</option>
+        <option value="Licence 3">Licence 3</option>
+      </select>
+
+      <label class="sr-only" for="schedule-field">Filière</label>
+      <select id="schedule-field" name="filiere">
+        <option value="">Filière</option>
+        <option value="Info" selected>Info</option>
+        <option value="Physique">Physique</option>
+        <option value="Mathématiques appliquées">Mathématiques appliquées</option>
+      </select>
+
+      <label class="sr-only" for="schedule-subject">Matière</label>
+      <select id="schedule-subject" name="matiere">
+        <option value="">Matière</option>
+        <option value="Administration de base de données" selected>Administration de base de données</option>
+        <option value="Optique géométrie">Optique géométrie</option>
+        <option value="Mathématiques">Mathématiques</option>
+      </select>
+
+      <button class="search-button" type="submit">Rechercher</button>
+    </form>
+
+    <h2 class="available-title">Les emplois du temps disponibles</h2>
+    <div class="schedule-cards">
+      @for (schedule of filteredSchedules; track schedule.id) {
+        <article class="schedule-card" [style.background-image]="'url(' + schedule.image + ')'">
+          <button
+            class="favorite-button"
+            [class.is-favorite]="isFavorite(schedule.id)"
+            type="button"
+            [attr.aria-label]="isFavorite(schedule.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+            [attr.aria-pressed]="isFavorite(schedule.id)"
+            (click)="toggleFavorite(schedule.id)"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z" />
+            </svg>
+          </button>
+          <div class="card-information">
+            <strong>{{ schedule.title }}</strong>
+            <span>{{ schedule.status }}</span>
+          </div>
+          <div class="card-actions">
+            <button class="card-action preview-action" type="button" disabled [attr.aria-label]="'Aperçu indisponible pour ' + schedule.title">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" />
+                <circle cx="12" cy="12" r="2.5" />
+              </svg>
+            </button>
+            <button class="card-action download-action" type="button" disabled [attr.aria-label]="'Téléchargement indisponible pour ' + schedule.title">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3" />
+              </svg>
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <p class="empty-results">Aucun emploi du temps ne correspond à ces filtres.</p>
+      }
+    </div>
+  </section>
+</main>

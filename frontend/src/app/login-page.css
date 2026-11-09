@@ -1,0 +1,211 @@
+:host {
+  display: block;
+}
+
+.login-page {
+  min-height: 100vh;
+  padding: 18px 24px 0;
+  background: #f6f9fb;
+}
+
+.login-scene {
+  width: min(100%, 1120px);
+  min-height: 622px;
+  margin: 0 auto;
+  background: url('/images/campus-palmiers.jpg') center / cover no-repeat;
+}
+
+.top-campus {
+  height: 54px;
+}
+
+.login-layout {
+  min-height: 520px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.login-photo-side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 28px;
+  overflow: hidden;
+  background: rgb(20 30 47 / 58%);
+}
+
+.login-intro {
+  width: 100%;
+  margin-top: 40px;
+}
+
+.login-intro h1 {
+  margin: 0 0 25px;
+  color: #c36536;
+  font-size: clamp(26px, 3.8vw, 36px);
+  font-weight: 700;
+}
+
+.login-intro p {
+  max-width: 290px;
+  margin: 0;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.login-form-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 43px 32px;
+  background: #fff;
+}
+
+.login-form {
+  width: min(100%, 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.login-logo {
+  width: 137px;
+  height: 105px;
+  align-self: center;
+  margin-bottom: 4px;
+  object-fit: contain;
+}
+
+.login-form h2 {
+  margin: 0 0 19px;
+  color: #a65327;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-form input {
+  height: 39px;
+  margin: 0 0 19px;
+  padding: 7px 0 5px;
+  border: 0;
+  border-bottom: 1px solid #a65327;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: #202020;
+  font: inherit;
+  font-size: 12px;
+}
+
+.login-form input::placeholder {
+  color: #a65327;
+  opacity: 1;
+}
+
+.login-form input:focus {
+  border-bottom-width: 2px;
+}
+
+.login-form button {
+  height: 40px;
+  margin-top: 8px;
+  border: 0;
+  background: #a65327;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background: #bd6335;
+}
+
+.login-message {
+  min-height: 16px;
+  margin: 10px 0 0;
+  color: #a65327;
+  font-size: 11px;
+  text-align: center;
+}
+
+.register-prompt {
+  width: min(100%, 300px);
+  margin: 20px 0 0;
+  color: #555;
+  font-size: 13px;
+  text-align: center;
+}
+
+.register-prompt a {
+  margin-left: 7px;
+  color: #a65327;
+  text-decoration: none;
+}
+
+.register-prompt a:hover {
+  text-decoration: underline;
+}
+
+.bottom-campus {
+  height: 48px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .login-page {
+    padding: 12px 14px 0;
+  }
+
+  .login-scene {
+    min-height: 0;
+  }
+
+  .top-campus {
+    height: 42px;
+  }
+
+  .login-layout {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .login-photo-side {
+    min-height: 245px;
+    align-items: flex-end;
+    padding: 24px;
+  }
+
+  .login-intro {
+    margin-top: 0;
+  }
+
+  .login-intro h1 {
+    margin-bottom: 10px;
+    font-size: 29px;
+  }
+
+  .login-form-side {
+    padding: 26px 26px 34px;
+  }
+
+  .login-logo {
+    width: 112px;
+    height: 82px;
+  }
+
+  .bottom-campus {
+    height: 34px;
+  }
+}

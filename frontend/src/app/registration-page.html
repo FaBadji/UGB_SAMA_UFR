@@ -1,0 +1,45 @@
+<main class="registration-page">
+  <section class="registration-stage">
+    <p class="campus-name" aria-hidden="true">UNIVERSITÉ GASTON BERGER</p>
+    <div class="registration-panel">
+      <div class="registration-intro">
+        <div>
+          <h1>Inscription en<br />quelques clics</h1>
+          <p>une fois l’inscription terminée , vous aurez accès a tous les résultats et emploi du temps vous correspondant</p>
+        </div>
+      </div>
+
+      <div class="registration-form-side">
+        <h2>Inscription</h2>
+        <form (submit)="register($event)">
+          <label class="sr-only" for="registration-email">Email</label>
+          <input id="registration-email" type="email" name="email" autocomplete="email" placeholder="Email" required />
+
+          <label class="sr-only" for="registration-field">Filière</label>
+          <select id="registration-field" name="filiere" required>
+            <option value="" disabled selected>Filière</option>
+            <option value="informatique">Informatique</option>
+            <option value="mathematiques-appliquees">Mathématiques appliquées</option>
+            <option value="physique-appliquee">Physique appliquée</option>
+            <option value="chimie-appliquee">Chimie appliquée</option>
+            <option value="geographie">Géographie</option>
+          </select>
+
+          <label class="sr-only" for="registration-password">Mot de passe</label>
+          <input id="registration-password" type="password" name="password" autocomplete="new-password" placeholder="Mot de passe" required />
+
+          <label class="sr-only" for="registration-password-confirmation">Répéter mot de passe</label>
+          <input id="registration-password-confirmation" type="password" name="passwordConfirmation" autocomplete="new-password" placeholder="Répéter mot de passe" required />
+
+          <button type="submit">Inscription</button>
+          <p class="registration-message" aria-live="polite">{{ message }}</p>
+        </form>
+
+        <p class="login-prompt">Déjà un compte ? <a routerLink="/connexion">connexion</a></p>
+      </div>
+    </div>
+  </section>
+  <section class="registration-lower" aria-label="Informations complémentaires">
+    <a routerLink="/">en savoir plus</a>
+  </section>
+</main>
