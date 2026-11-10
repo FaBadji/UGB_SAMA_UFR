@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import type { AcademicDocumentFilters } from './academic-documents.service';
 import { SchedulePage } from './schedule-page';
 
 @Component({
@@ -10,5 +11,9 @@ import { SchedulePage } from './schedule-page';
 })
 export class DeliberationPage extends SchedulePage {
   protected override readonly pageTitle = 'Deliberation';
-  protected override readonly availableTitle = 'Les emplois du temps disponibles';
+  protected override readonly availableTitle = 'Les délibérations disponibles';
+
+  protected override loadDocuments(filters: AcademicDocumentFilters = {}): void {
+    this.loadFrom(this.documentsApi.getDeliberations(filters), Object.keys(filters).length === 0);
+  }
 }

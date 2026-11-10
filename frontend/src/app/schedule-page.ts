@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SCHEDULE_CARDS, type ScheduleCard } from './schedule-card.data';
+import type { Observable } from 'rxjs';
+import { AcademicDocumentsService, type AcademicDocument, type AcademicDocumentFilters } from './academic-documents.service';
+import { toAcademicDocumentCards, type AcademicDocumentCard } from './academic-document-card';
 
 @Component({
   selector: 'app-schedule-page',
@@ -8,36 +10,81 @@ import { SCHEDULE_CARDS, type ScheduleCard } from './schedule-card.data';
   templateUrl: './schedule-page.html',
   styleUrl: './schedule-page.css'
 })
-export class SchedulePage {
+export class SchedulePage implements OnInit {
   protected readonly pageTitle: string = 'Emploi du temps';
   protected readonly availableTitle: string = 'Les emplois du temps disponibles';
+  protected readonly documentsApi = inject(AcademicDocumentsService);
 
-  protected readonly schedules = SCHEDULE_CARDS;
-  protected filteredSchedules = this.schedules;
-  protected favorites: string[] = [];
+  protected filteredSchedules: AcademicDocumentCard[] = [];
+  protected levels: string[] = [];
+  protected fields: string[] = [];
+  protected favorites: number[] = [];
+  protected isLoading = true;
+  protected errorMessage = '';
+  private requestSequence = 0;
+
+  ngOnInit(): void {
+    this.loadDocuments();
+  }
+
+  protected loadDocuments(filters: AcademicDocumentFilters = {}): void {
+    this.loadFrom(this.documentsApi.getSchedules(filters), Object.keys(filters).length === 0);
+  }
+
+  protected loadFrom(
+    documents: Observable<AcademicDocument[]>,
+    refreshFilterOptions = false,
+  ): void {
+    const requestId = ++this.requestSequence;
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    documents.subscribe({
+      next: (records) => {
+        if (requestId !== this.requestSequence) {
+          return;
+        }
+
+        if (refreshFilterOptions) {
+          this.levels = [...new Set(records.map((record) => record.niveau))].sort();
+          this.fields = [...new Set(records.map((record) => record.filiere))].sort();
+        }
+
+        this.filteredSchedules = toAcademicDocumentCards(records);
+        this.isLoading = false;
+      },
+      error: () => {
+        if (requestId !== this.requestSequence) {
+          return;
+        }
+
+        this.errorMessage = 'Impossible de charger les documents. Vérifiez la connexion au serveur.';
+        this.isLoading = false;
+      },
+    });
+  }
 
   protected search(event: SubmitEvent): void {
     event.preventDefault();
-    const form = event.currentTarget as HTMLFormElement;
-    const values = new FormData(form);
-    const level = values.get('niveau');
-    const field = values.get('filiere');
-    const subject = values.get('matiere');
-
-    this.filteredSchedules = this.schedules.filter((schedule) =>
-      (level === '' || schedule.level === level) &&
-      (field === '' || schedule.field === field) &&
-      (subject === '' || schedule.subject === subject)
-    );
+    const values = new FormData(event.currentTarget as HTMLFormElement);
+    this.loadDocuments({
+      niveau: this.formValue(values, 'niveau'),
+      filiere: this.formValue(values, 'filiere'),
+    });
   }
 
-  protected toggleFavorite(id: string): void {
+  protected toggleFavorite(id: number): void {
     this.favorites = this.favorites.includes(id)
       ? this.favorites.filter((favorite) => favorite !== id)
       : [...this.favorites, id];
   }
 
-  protected isFavorite(id: string): boolean {
+  protected isFavorite(id: number): boolean {
     return this.favorites.includes(id);
+  }
+
+  private formValue(values: FormData, key: string): string | undefined {
+    const value = values.get(key);
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
   }
 }

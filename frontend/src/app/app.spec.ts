@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { HomePage } from './app';
 import { RegistrationPage } from './registration-page';
 import { LoginPage } from './login-page';
@@ -7,7 +8,57 @@ import { DashboardPage } from './dashboard-page';
 import { SchedulePage } from './schedule-page';
 import { DeliberationPage } from './deliberation-page';
 import { ArchivePage } from './archive-page';
+import { AcademicDocumentsService, type AcademicDocument, type AcademicDocumentFilters } from './academic-documents.service';
 import { routes } from './app.routes';
+
+const scheduleDocuments: AcademicDocument[] = [
+  {
+    id: 1,
+    niveau: 'Licence 1',
+    filiere: 'Physique',
+    fichier_pdf: '/api/emplois-du-temps/1/pdf',
+    telechargement_pdf: '/api/emplois-du-temps/1/telecharger',
+    date_sortie: '2026-11-10',
+  },
+  {
+    id: 2,
+    niveau: 'Licence 2',
+    filiere: 'Mathématiques appliquées',
+    fichier_pdf: '/api/emplois-du-temps/2/pdf',
+    telechargement_pdf: '/api/emplois-du-temps/2/telecharger',
+    date_sortie: '2026-11-09',
+  },
+  {
+    id: 3,
+    niveau: 'Licence 3',
+    filiere: 'Info',
+    fichier_pdf: '/api/emplois-du-temps/3/pdf',
+    telechargement_pdf: '/api/emplois-du-temps/3/telecharger',
+    date_sortie: '2026-11-08',
+  },
+];
+
+const deliberationDocuments: AcademicDocument[] = scheduleDocuments.map((document) => ({
+  ...document,
+  fichier_pdf: document.fichier_pdf.replace('emplois-du-temps', 'deliberations'),
+  telechargement_pdf: document.telechargement_pdf.replace('emplois-du-temps', 'deliberations'),
+}));
+
+function filterDocuments(
+  documents: AcademicDocument[],
+  filters: AcademicDocumentFilters = {},
+): AcademicDocument[] {
+  return documents.filter((document) =>
+    (!filters.niveau || document.niveau === filters.niveau) &&
+    (!filters.filiere || document.filiere === filters.filiere)
+  );
+}
+
+const academicDocumentsMock = {
+  getSchedules: (filters: AcademicDocumentFilters = {}) => of(filterDocuments(scheduleDocuments, filters)),
+  getResults: () => of([]),
+  getDeliberations: (filters: AcademicDocumentFilters = {}) => of(filterDocuments(deliberationDocuments, filters)),
+};
 
 describe('HomePage', () => {
   beforeEach(async () => {
@@ -160,18 +211,21 @@ describe('SchedulePage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SchedulePage],
-      providers: [provideRouter(routes)]
+      providers: [
+        provideRouter(routes),
+        { provide: AcademicDocumentsService, useValue: academicDocumentsMock }
+      ]
     }).compileComponents();
   });
 
-  it('should render the schedule filters and three schedule cards', async () => {
+  it('should render the schedule filters and cards loaded from the API', async () => {
     const fixture = TestBed.createComponent(SchedulePage);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('#schedule-title')?.textContent).toContain('Emploi du temps');
     expect(compiled.querySelector('.schedule-nav a[href="/deliberation"]')?.textContent).toContain('Résultats');
-    expect(compiled.querySelectorAll('.schedule-filters select')).toHaveLength(3);
+    expect(compiled.querySelectorAll('.schedule-filters select')).toHaveLength(2);
     expect(compiled.querySelectorAll('.schedule-card')).toHaveLength(3);
     expect(compiled.querySelector('.schedule-card[style*="schedule-card-optics.png"]')).toBeTruthy();
   });
@@ -183,16 +237,15 @@ describe('SchedulePage', () => {
     const form = compiled.querySelector('.schedule-filters') as HTMLFormElement;
     const level = compiled.querySelector('[name="niveau"]') as HTMLSelectElement;
     const field = compiled.querySelector('[name="filiere"]') as HTMLSelectElement;
-    const subject = compiled.querySelector('[name="matiere"]') as HTMLSelectElement;
 
     level.value = 'Licence 3';
     field.value = 'Info';
-    subject.value = 'Administration de base de données';
     form.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
     fixture.detectChanges();
 
     expect(compiled.querySelectorAll('.schedule-card')).toHaveLength(1);
-    expect(compiled.querySelector('.card-information strong')?.textContent).toContain('Informatique - L3SI');
+    expect(compiled.querySelector('.card-information strong')?.textContent).toContain('Info - Licence 3');
+    expect(compiled.querySelector('.preview-action')?.getAttribute('href')).toBe('/api/emplois-du-temps/3/pdf');
 
     const favorite = compiled.querySelector('.favorite-button') as HTMLButtonElement;
     favorite.click();
@@ -209,7 +262,10 @@ describe('DeliberationPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DeliberationPage],
-      providers: [provideRouter(routes)]
+      providers: [
+        provideRouter(routes),
+        { provide: AcademicDocumentsService, useValue: academicDocumentsMock }
+      ]
     }).compileComponents();
   });
 
@@ -219,9 +275,10 @@ describe('DeliberationPage', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('#schedule-title')?.textContent).toContain('Deliberation');
-    expect(compiled.querySelector('.available-title')?.textContent).toContain('Les emplois du temps disponibles');
-    expect(compiled.querySelectorAll('.schedule-filters select')).toHaveLength(3);
+    expect(compiled.querySelector('.available-title')?.textContent).toContain('Les délibérations disponibles');
+    expect(compiled.querySelectorAll('.schedule-filters select')).toHaveLength(2);
     expect(compiled.querySelectorAll('.schedule-card')).toHaveLength(3);
+    expect(compiled.querySelector('.preview-action')?.getAttribute('href')).toBe('/api/deliberations/1/pdf');
   });
 
   it('should be available at the deliberation route', () => {
@@ -233,7 +290,10 @@ describe('ArchivePage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ArchivePage],
-      providers: [provideRouter(routes)]
+      providers: [
+        provideRouter(routes),
+        { provide: AcademicDocumentsService, useValue: academicDocumentsMock }
+      ]
     }).compileComponents();
   });
 

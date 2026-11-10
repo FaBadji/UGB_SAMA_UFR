@@ -40,25 +40,17 @@
       <label class="sr-only" for="schedule-level">Niveau</label>
       <select id="schedule-level" name="niveau">
         <option value="">Niveau</option>
-        <option value="Licence 1" selected>Licence 1</option>
-        <option value="Licence 2">Licence 2</option>
-        <option value="Licence 3">Licence 3</option>
+        @for (level of levels; track level) {
+          <option [value]="level">{{ level }}</option>
+        }
       </select>
 
       <label class="sr-only" for="schedule-field">Filière</label>
       <select id="schedule-field" name="filiere">
         <option value="">Filière</option>
-        <option value="Info" selected>Info</option>
-        <option value="Physique">Physique</option>
-        <option value="Mathématiques appliquées">Mathématiques appliquées</option>
-      </select>
-
-      <label class="sr-only" for="schedule-subject">Matière</label>
-      <select id="schedule-subject" name="matiere">
-        <option value="">Matière</option>
-        <option value="Administration de base de données" selected>Administration de base de données</option>
-        <option value="Optique géométrie">Optique géométrie</option>
-        <option value="Mathématiques">Mathématiques</option>
+        @for (field of fields; track field) {
+          <option [value]="field">{{ field }}</option>
+        }
       </select>
 
       <button class="search-button" type="submit">Rechercher</button>
@@ -66,7 +58,12 @@
 
     <h2 class="available-title">{{ availableTitle }}</h2>
     <div class="schedule-cards">
-      @for (schedule of filteredSchedules; track schedule.id) {
+      @if (isLoading) {
+        <p class="empty-results" role="status">Chargement des documents…</p>
+      } @else if (errorMessage) {
+        <p class="empty-results" role="alert">{{ errorMessage }}</p>
+      } @else {
+        @for (schedule of filteredSchedules; track schedule.id) {
         <article class="schedule-card" [style.background-image]="'url(' + schedule.image + ')'">
           <button
             class="favorite-button"
@@ -85,21 +82,22 @@
             <span>{{ schedule.status }}</span>
           </div>
           <div class="card-actions">
-            <button class="card-action preview-action" type="button" disabled [attr.aria-label]="'Aperçu indisponible pour ' + schedule.title">
+            <a class="card-action preview-action" [href]="schedule.fichier_pdf" target="_blank" rel="noopener" [attr.aria-label]="'Prévisualiser ' + schedule.title">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="12" cy="12" r="8" />
                 <circle cx="12" cy="12" r="2.5" />
               </svg>
-            </button>
-            <button class="card-action download-action" type="button" disabled [attr.aria-label]="'Téléchargement indisponible pour ' + schedule.title">
+            </a>
+            <a class="card-action download-action" [href]="schedule.telechargement_pdf" [attr.aria-label]="'Télécharger ' + schedule.title">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3" />
               </svg>
-            </button>
+            </a>
           </div>
         </article>
-      } @empty {
-        <p class="empty-results">Aucun emploi du temps ne correspond à ces filtres.</p>
+        } @empty {
+          <p class="empty-results">Aucun document ne correspond à ces filtres.</p>
+        }
       }
     </div>
   </section>

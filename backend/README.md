@@ -7,6 +7,27 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## SAMA UFR API
+
+The Laravel backend serves the academic-document API consumed by the Angular
+frontend:
+
+- `GET /api/emplois-du-temps` (optional exact `niveau` and `filiere` filters)
+- `GET /api/resultats` (optional `niveau`, `filiere`, and `matiere` filters)
+- `GET /api/deliberations` (optional exact `niveau` and `filiere` filters)
+- Each collection's `/{id}/pdf` and `/{id}/telecharger` routes preview or
+  download an existing PDF.
+
+Set `DB_CONNECTION=pgsql`, `DB_DATABASE=sama_ufr`, and the local PostgreSQL
+username/password in `.env`. Do not share credentials. After verifying the
+target database, run `php artisan migrate`; the migrations create the three
+academic-document tables and do not create user, password-reset, or session
+tables. Store PDFs on Laravel's `public` disk (`storage/app/public`) and save
+their relative paths in `fichier_pdf`.
+
+Run the backend with `php artisan serve`. The frontend development proxy forwards
+`/api` requests to `http://127.0.0.1:8000`.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

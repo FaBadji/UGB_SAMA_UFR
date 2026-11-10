@@ -13,6 +13,13 @@ class ContentModelsTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_content_migrations_do_not_create_user_tables(): void
+    {
+        $this->assertFalse(Schema::hasTable('users'));
+        $this->assertFalse(Schema::hasTable('password_reset_tokens'));
+        $this->assertFalse(Schema::hasTable('sessions'));
+    }
+
     public function test_emploi_du_temps_records_are_stored_with_the_requested_fields(): void
     {
         $emploi = EmploiDuTemps::factory()->create([
