@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'filiere'])]
+#[Fillable(['name', 'email', 'password', 'filiere', 'email_verified_at'])]
 #[Hidden(['password', 'remember_token', 'email_verification_code'])]
 class User extends Authenticatable implements MustVerifyEmailContract
 {

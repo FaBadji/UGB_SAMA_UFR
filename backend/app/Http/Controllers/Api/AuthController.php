@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class AuthController
 {
@@ -19,24 +18,30 @@ class AuthController
             'filiere' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $requireVerification = (bool) config('app.require_email_verification', false);
+
         $user = User::create([
             'name' => $data['name'] ?? strstr($data['email'], '@', true) ?: $data['email'],
             'email' => $data['email'],
             'password' => $data['password'],
             'filiere' => $data['filiere'] ?? null,
+            'email_verified_at' => $requireVerification ? null : now(),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Trigger code-based email verification.
-        try {
-            $user->sendEmailVerificationNotification();
-        } catch (\Throwable $exception) {
-            // Do not block registration if mail transport is unavailable.
+        if ($requireVerification) {
+            try {
+                $user->sendEmailVerificationNotification();
+            } catch (\Throwable $exception) {
+                // Do not block registration if mail transport is unavailable.
+            }
         }
 
         return response()->json([
-            'message' => 'Inscription réussie. Un code de vérification a été envoyé à votre adresse e-mail.',
+            'message' => $requireVerification
+                ? "Inscription réussie. Un code de vérification a été envoyé à votre adresse e-mail."
+                : "Inscription réussie. Votre compte est prêt à être utilisé.",
             'user' => $user,
             'token' => $token,
             'access_token' => $token,

@@ -7,8 +7,8 @@
     <nav class="dashboard-nav" aria-label="Navigation principale">
       <a class="active" href="#accueil">Accueil</a>
       <a routerLink="/emploi-du-temps">Schedule</a>
-      <a href="#resultats">Résultats</a>
-      <a href="#archives">Archives</a>
+      <a routerLink="/deliberation">Résultats</a>
+      <a routerLink="/archives">Archives</a>
     </nav>
 
     <div class="dashboard-account">
@@ -67,7 +67,7 @@
             <path d="M28 13v29" />
           </svg>
         </a>
-        <a class="action-card results-card" id="resultats" href="#resultats">
+        <a class="action-card results-card" id="resultats" routerLink="/deliberation">
           <span class="action-details">
             <small>consulté le 11/04</small>
             <span>Résultat examens</span>

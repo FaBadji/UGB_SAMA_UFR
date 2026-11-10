@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -8,10 +10,47 @@ import { RouterLink } from '@angular/router';
   styleUrl: './login-page.css'
 })
 export class LoginPage {
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
   protected message = '';
+  protected loading = false;
 
   protected login(event: SubmitEvent): void {
     event.preventDefault();
-    this.message = 'La connexion n’est pas encore reliée au serveur.';
+
+    const form = event.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+    const email = String(data.get('email') ?? '');
+    const password = String(data.get('password') ?? '');
+
+    if (!email || !password) {
+      this.message = 'Veuillez renseigner votre e-mail et votre mot de passe.';
+      return;
+    }
+
+    this.loading = true;
+    this.message = '';
+
+    this.auth.login({ email, password }).subscribe({
+      next: (response) => {
+        this.loading = false;
+        if (!response?.user?.email_verified_at) {
+          this.message = 'Connexion réussie. Pensez à vérifier votre e-mail.';
+        } else {
+          this.message = 'Connexion réussie.';
+        }
+        this.router.navigateByUrl('/dashboard');
+      },
+      error: (error) => {
+        this.loading = false;
+        this.message = this.extractMessage(error, 'La connexion a échoué.');
+      }
+    });
+  }
+
+  private extractMessage(error: unknown, fallback: string): string {
+    const response = error as { error?: { message?: string }; message?: string };
+    return response?.error?.message ?? response?.message ?? fallback;
   }
 }

@@ -5,6 +5,8 @@ import { RegistrationPage } from './registration-page';
 import { LoginPage } from './login-page';
 import { DashboardPage } from './dashboard-page';
 import { SchedulePage } from './schedule-page';
+import { DeliberationPage } from './deliberation-page';
+import { ArchivePage } from './archive-page';
 import { routes } from './app.routes';
 
 describe('HomePage', () => {
@@ -115,7 +117,7 @@ describe('LoginPage', () => {
     expect(routes.find((route) => route.path === 'connexion')?.component).toBe(LoginPage);
   });
 
-  it('should say when login is not connected to a server', async () => {
+  it('should ask for credentials when the form is empty', async () => {
     const fixture = TestBed.createComponent(LoginPage);
     await fixture.whenStable();
     const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
@@ -123,7 +125,7 @@ describe('LoginPage', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.login-message')?.textContent).toContain(
-      'La connexion n’est pas encore reliée au serveur.'
+      'Veuillez renseigner votre e-mail et votre mot de passe.'
     );
   });
 });
@@ -143,9 +145,10 @@ describe('DashboardPage', () => {
 
     expect(compiled.querySelector('.welcome-banner h1')?.textContent).toContain('Bienvenue , Fatou');
     expect(compiled.querySelector('.dashboard-brand img')?.getAttribute('src')).toBe('/images/sama-ufr-logo.png');
+    expect(compiled.querySelector('.dashboard-nav a[href="/deliberation"]')?.textContent).toContain('Résultats');
     expect(compiled.querySelectorAll('.filter-option')).toHaveLength(3);
     expect(compiled.querySelector('.schedule-card')?.getAttribute('href')).toBe('/emploi-du-temps');
-    expect(compiled.querySelector('#resultats')).toBeTruthy();
+    expect(compiled.querySelector('#resultats')?.getAttribute('href')).toBe('/deliberation');
   });
 
   it('should be available at the dashboard route', () => {
@@ -167,6 +170,7 @@ describe('SchedulePage', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('#schedule-title')?.textContent).toContain('Emploi du temps');
+    expect(compiled.querySelector('.schedule-nav a[href="/deliberation"]')?.textContent).toContain('Résultats');
     expect(compiled.querySelectorAll('.schedule-filters select')).toHaveLength(3);
     expect(compiled.querySelectorAll('.schedule-card')).toHaveLength(3);
     expect(compiled.querySelector('.schedule-card[style*="schedule-card-optics.png"]')).toBeTruthy();
@@ -198,5 +202,73 @@ describe('SchedulePage', () => {
 
   it('should be available at the emploi-du-temps route', () => {
     expect(routes.find((route) => route.path === 'emploi-du-temps')?.component).toBe(SchedulePage);
+  });
+});
+
+describe('DeliberationPage', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [DeliberationPage],
+      providers: [provideRouter(routes)]
+    }).compileComponents();
+  });
+
+  it('should render deliberations with the schedule page design and filters', async () => {
+    const fixture = TestBed.createComponent(DeliberationPage);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('#schedule-title')?.textContent).toContain('Deliberation');
+    expect(compiled.querySelector('.available-title')?.textContent).toContain('Les emplois du temps disponibles');
+    expect(compiled.querySelectorAll('.schedule-filters select')).toHaveLength(3);
+    expect(compiled.querySelectorAll('.schedule-card')).toHaveLength(3);
+  });
+
+  it('should be available at the deliberation route', () => {
+    expect(routes.find((route) => route.path === 'deliberation')?.component).toBe(DeliberationPage);
+  });
+});
+
+describe('ArchivePage', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ArchivePage],
+      providers: [provideRouter(routes)]
+    }).compileComponents();
+  });
+
+  it('should render the archive banner, type switch, search, and cards', async () => {
+    const fixture = TestBed.createComponent(ArchivePage);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.archive-hero h1')?.textContent).toContain('Bienvenue sur les archives');
+    expect(compiled.querySelectorAll('.archive-type-options button')).toHaveLength(2);
+    expect(compiled.querySelector('[name="search"]')).toBeTruthy();
+    expect(compiled.querySelectorAll('.archive-cards .schedule-card')).toHaveLength(3);
+    expect(compiled.querySelector('.schedule-nav a[href="/deliberation"]')?.textContent).toContain('Résultats');
+    expect(compiled.querySelector('.schedule-nav .active')?.textContent).toContain('Archives');
+  });
+
+  it('should switch archive type and search the available cards', async () => {
+    const fixture = TestBed.createComponent(ArchivePage);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const typeButton = compiled.querySelector('.archive-type-options button:first-child') as HTMLButtonElement;
+    typeButton.click();
+    fixture.detectChanges();
+    expect(typeButton.getAttribute('aria-pressed')).toBe('true');
+
+    const form = compiled.querySelector('.archive-search') as HTMLFormElement;
+    const query = compiled.querySelector('[name="search"]') as HTMLInputElement;
+    query.value = 'Mathématiques';
+    form.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('.archive-cards .schedule-card')).toHaveLength(1);
+    expect(compiled.querySelector('.card-information strong')?.textContent).toContain('Mathématiques');
+  });
+
+  it('should be available at the archives route', () => {
+    expect(routes.find((route) => route.path === 'archives')?.component).toBe(ArchivePage);
   });
 });

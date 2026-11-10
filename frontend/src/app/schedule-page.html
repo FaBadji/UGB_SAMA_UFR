@@ -7,8 +7,8 @@
     <nav class="schedule-nav" aria-label="Navigation principale">
       <a routerLink="/dashboard">Accueil</a>
       <a class="active" routerLink="/emploi-du-temps">Schedule</a>
-      <a routerLink="/dashboard" fragment="resultats">Résultats</a>
-      <a routerLink="/dashboard" fragment="archives">Archives</a>
+      <a routerLink="/deliberation">Résultats</a>
+      <a routerLink="/archives">Archives</a>
     </nav>
 
     <div class="schedule-account">
@@ -33,7 +33,7 @@
           <path d="M19 12H5m7 7-7-7 7-7" />
         </svg>
       </a>
-      <h1 id="schedule-title">Emploi du temps</h1>
+      <h1 id="schedule-title">{{ pageTitle }}</h1>
     </div>
 
     <form class="schedule-filters" (submit)="search($event)">
@@ -64,7 +64,7 @@
       <button class="search-button" type="submit">Rechercher</button>
     </form>
 
-    <h2 class="available-title">Les emplois du temps disponibles</h2>
+    <h2 class="available-title">{{ availableTitle }}</h2>
     <div class="schedule-cards">
       @for (schedule of filteredSchedules; track schedule.id) {
         <article class="schedule-card" [style.background-image]="'url(' + schedule.image + ')'">
