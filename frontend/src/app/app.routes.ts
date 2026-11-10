@@ -4,6 +4,8 @@ import { RegistrationPage } from './registration-page';
 import { LoginPage } from './login-page';
 import { DashboardPage } from './dashboard-page';
 import { SchedulePage } from './schedule-page';
+import { DeliberationPage } from './deliberation-page';
+import { ArchivePage } from './archive-page';
 
 export const routes: Routes = [
   { path: '', component: HomePage },
@@ -11,5 +13,7 @@ export const routes: Routes = [
   { path: 'connexion', component: LoginPage },
   { path: 'dashboard', component: DashboardPage },
   { path: 'emploi-du-temps', component: SchedulePage },
+  { path: 'deliberation', component: DeliberationPage },
+  { path: 'archives', component: ArchivePage },
   { path: '**', redirectTo: '' }
 ];

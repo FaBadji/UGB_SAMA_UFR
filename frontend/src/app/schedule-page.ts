@@ -1,15 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
-interface ScheduleCard {
-  id: string;
-  title: string;
-  image: string;
-  status: string;
-  level: string;
-  field: string;
-  subject: string;
-}
+import { SCHEDULE_CARDS, type ScheduleCard } from './schedule-card.data';
 
 @Component({
   selector: 'app-schedule-page',
@@ -18,36 +9,10 @@ interface ScheduleCard {
   styleUrl: './schedule-page.css'
 })
 export class SchedulePage {
-  protected readonly schedules: ScheduleCard[] = [
-    {
-      id: 'optique',
-      title: 'Optique géométrie',
-      image: '/images/schedule-card-optics.png',
-      status: 'Pas encore consulté',
-      level: 'Licence 1',
-      field: 'Physique',
-      subject: 'Optique géométrie'
-    },
-    {
-      id: 'mathematiques',
-      title: 'Mathématiques - L2 MA',
-      image: '/images/schedule-card-mathematics.png',
-      status: 'Pas encore consulté',
-      level: 'Licence 2',
-      field: 'Mathématiques appliquées',
-      subject: 'Mathématiques'
-    },
-    {
-      id: 'informatique',
-      title: 'Informatique - L3SI',
-      image: '/images/schedule-card-computing.png',
-      status: '1 fois consulté',
-      level: 'Licence 3',
-      field: 'Info',
-      subject: 'Administration de base de données'
-    }
-  ];
+  protected readonly pageTitle: string = 'Emploi du temps';
+  protected readonly availableTitle: string = 'Les emplois du temps disponibles';
 
+  protected readonly schedules = SCHEDULE_CARDS;
   protected filteredSchedules = this.schedules;
   protected favorites: string[] = [];
 
