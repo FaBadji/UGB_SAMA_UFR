@@ -33,17 +33,27 @@ export class LoginPage {
     this.message = '';
 
     this.auth.login({ email, password }).subscribe({
-      next: (response) => {
+      next: () => {
         this.loading = false;
-        if (!response?.user?.email_verified_at) {
-          this.message = 'Connexion réussie. Pensez à vérifier votre e-mail.';
-        } else {
-          this.message = 'Connexion réussie.';
-        }
+        this.message = 'Connexion réussie.';
         this.router.navigateByUrl('/dashboard');
       },
       error: (error) => {
         this.loading = false;
+
+        const response = error as {
+          status?: number;
+          error?: { message?: string; requires_email_verification?: boolean };
+          message?: string;
+        };
+
+        if (response.status === 403 && response.error?.requires_email_verification) {
+          this.router.navigate(['/verification-email'], {
+            queryParams: { email, notice: 'unverified' }
+          });
+          return;
+        }
+
         this.message = this.extractMessage(error, 'La connexion a échoué.');
       }
     });

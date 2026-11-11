@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SCHEDULE_CARDS, type ScheduleCard } from './schedule-card.data';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-schedule-page',
@@ -9,6 +10,8 @@ import { SCHEDULE_CARDS, type ScheduleCard } from './schedule-card.data';
   styleUrl: './schedule-page.css'
 })
 export class SchedulePage {
+  private readonly auth = inject(AuthService);
+
   protected readonly pageTitle: string = 'Emploi du temps';
   protected readonly availableTitle: string = 'Les emplois du temps disponibles';
 
@@ -39,5 +42,9 @@ export class SchedulePage {
 
   protected isFavorite(id: string): boolean {
     return this.favorites.includes(id);
+  }
+
+  protected logout(): void {
+    this.auth.logout();
   }
 }

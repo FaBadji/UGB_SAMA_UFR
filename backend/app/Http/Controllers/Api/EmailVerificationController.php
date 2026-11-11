@@ -5,67 +5,75 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class EmailVerificationController
 {
     public function send(Request $request): JsonResponse
     {
+        $data = $request->validate([
+            'email' => ['nullable', 'string', 'email'],
+        ]);
+
         $user = $request->user() ?? auth('sanctum')->user();
 
-        if (!$user && $request->filled('email')) {
-            $user = User::where('email', $request->email)->first();
+        if (! $user && ! empty($data['email'])) {
+            $user = User::where('email', $data['email'])->first();
         }
 
-        if (!$user) {
-            $data = $request->validate([
-                'email' => ['required', 'string', 'email'],
-            ]);
-
-            $user = User::where('email', $data['email'])->firstOrFail();
+        if (! $user && empty($data['email'])) {
+            return response()->json([
+                'message' => 'Veuillez renseigner votre e-mail.',
+            ], 422);
         }
 
-        if ($user->hasVerifiedEmail()) {
+        if ($user?->hasVerifiedEmail()) {
             return response()->json([
                 'message' => 'L’adresse e-mail est déjà vérifiée.',
                 'verified' => true,
             ]);
         }
 
-        $user->sendEmailVerificationNotification();
+        if ($user) {
+            try {
+                $user->sendEmailVerificationNotification();
+            } catch (Throwable $exception) {
+                report($exception);
+
+                return response()->json([
+                    'message' => "Impossible d'envoyer le code de vérification pour le moment. Réessayez plus tard.",
+                    'verified' => false,
+                ], 503);
+            }
+        }
 
         return response()->json([
-            'message' => 'Un nouveau code de vérification a été envoyé.',
+            'message' => 'Si un compte non vérifié existe pour cette adresse, un nouveau code de vérification a été envoyé.',
             'verified' => false,
         ]);
     }
 
     public function verify(Request $request): JsonResponse
     {
+        $user = $request->user() ?? auth('sanctum')->user();
+
         $rules = [
             'code' => ['required', 'digits:6'],
+            'email' => $user
+                ? ['nullable', 'string', 'email']
+                : ['required', 'string', 'email'],
         ];
-
-        if (!$request->user() && !auth('sanctum')->user()) {
-            $rules['email'] = ['required', 'string', 'email'];
-        } else {
-            $rules['email'] = ['nullable', 'string', 'email'];
-        }
 
         $data = $request->validate($rules);
 
-        $user = $request->user() ?? auth('sanctum')->user();
-
-        if (!$user && isset($data['email'])) {
+        if (! $user) {
             $user = User::where('email', $data['email'])->first();
         }
 
-        if (!$user) {
-            return response()->json(['message' => 'Utilisateur introuvable.'], 404);
-        }
-
-        if ($request->filled('email') && $user->email !== $request->email) {
+        if (! $user || ($request->filled('email') && $user->email !== $request->email)) {
             return response()->json([
-                'message' => 'L’adresse e-mail ne correspond pas.',
+                'message' => 'Code invalide ou expiré.',
+                'verified' => false,
             ], 422);
         }
 
@@ -73,7 +81,7 @@ class EmailVerificationController
             return response()->json([
                 'message' => 'E-mail vérifié avec succès.',
                 'verified' => true,
-                'user' => $user,
+                'user' => $user->refresh(),
             ]);
         }
 

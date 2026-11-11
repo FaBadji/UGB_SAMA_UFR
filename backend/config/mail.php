@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', 'resend'),
 
     /*
     |--------------------------------------------------------------------------
@@ -114,5 +114,18 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Local Mail Recipient
+    |--------------------------------------------------------------------------
+    |
+    | When this address is set, all mail sent from the local environment is
+    | redirected to it. This is useful with providers such as Resend that
+    | restrict test-mode deliveries to the account owner's address.
+    |
+    */
+
+    'test_recipient' => env('MAIL_TEST_RECIPIENT'),
 
 ];

@@ -7,10 +7,10 @@
       <input id="verify-email" type="email" [(ngModel)]="email" placeholder="Email" required />
 
       <label class="sr-only" for="verify-code">Code</label>
-      <input id="verify-code" type="text" [(ngModel)]="code" placeholder="Code à 6 chiffres" required maxlength="6" />
+      <input id="verify-code" type="text" [(ngModel)]="code" placeholder="Code à 6 chiffres" required maxlength="6" inputmode="numeric" pattern="[0-9]{6}" />
 
-      <button type="submit">Vérifier</button>
-      <button type="button" (click)="resend()">Renvoyer le code</button>
+      <button type="submit" [disabled]="loading">Vérifier</button>
+      <button type="button" (click)="resend()" [disabled]="resending">{{ resending ? 'Envoi…' : 'Renvoyer le code' }}</button>
       <p class="auth-message" aria-live="polite">{{ message }}</p>
     </form>
     <p><a routerLink="/connexion">Retour à la connexion</a></p>

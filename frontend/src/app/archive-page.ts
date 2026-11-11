@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SCHEDULE_CARDS, type ScheduleCard } from './schedule-card.data';
+import { AuthService } from './auth.service';
 
 type ArchiveType = 'schedule' | 'deliberations';
 
@@ -11,6 +12,8 @@ type ArchiveType = 'schedule' | 'deliberations';
   styleUrls: ['./schedule-page.css', './archive-page.css']
 })
 export class ArchivePage {
+  private readonly auth = inject(AuthService);
+
   protected readonly schedules = SCHEDULE_CARDS;
   protected filteredSchedules: readonly ScheduleCard[] = this.schedules;
   protected archiveType: ArchiveType = 'deliberations';
@@ -41,5 +44,9 @@ export class ArchivePage {
 
   protected isFavorite(id: string): boolean {
     return this.favorites.includes(id);
+  }
+
+  protected logout(): void {
+    this.auth.logout();
   }
 }

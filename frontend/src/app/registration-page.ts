@@ -41,15 +41,20 @@ export class RegistrationPage {
       next: (response) => {
         this.loading = false;
         const email = String(data.get('email') ?? '');
-        if (response?.user?.email_verified_at) {
-          this.message = 'Inscription réussie. Votre compte est prêt à être utilisé.';
-          setTimeout(() => this.router.navigateByUrl('/connexion'), 1200);
-        } else {
-          this.message = 'Inscription réussie. Un code de vérification a été envoyé à votre adresse e-mail.';
+
+        if (response?.requires_email_verification) {
+          this.message = response.verification_email_sent === false
+            ? 'Inscription réussie, mais l’envoi du code a échoué. Utilisez « Renvoyer le code » sur la page suivante.'
+            : 'Inscription réussie. Un code de vérification a été envoyé à votre adresse e-mail.';
+
           setTimeout(() => {
             this.router.navigate(['/verification-email'], { queryParams: { email } });
-          }, 1200);
+          }, 1500);
+          return;
         }
+
+        this.message = 'Inscription réussie. Votre compte est prêt à être utilisé.';
+        setTimeout(() => this.router.navigateByUrl('/connexion'), 1200);
       },
       error: (error) => {
         this.loading = false;
