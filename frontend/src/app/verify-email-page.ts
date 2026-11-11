@@ -18,14 +18,23 @@ export class VerifyEmailPage implements OnInit {
   protected code = '';
   protected message = '';
   protected loading = false;
+  protected resending = false;
 
   ngOnInit(): void {
     this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
+
+    if (this.route.snapshot.queryParamMap.get('notice') === 'unverified') {
+      this.message = 'Votre adresse e-mail n’est pas encore vérifiée. Saisissez le code reçu ou demandez un nouveau code.';
+    }
   }
 
   protected verify(event: SubmitEvent): void {
     event.preventDefault();
-    if (!this.email || !this.code) {
+
+    const email = this.email.trim();
+    const code = this.code.trim();
+
+    if (!email || !code) {
       this.message = 'Veuillez renseigner votre e-mail et le code reçu.';
       return;
     }
@@ -33,7 +42,7 @@ export class VerifyEmailPage implements OnInit {
     this.loading = true;
     this.message = '';
 
-    this.auth.verifyEmail({ email: this.email, code: this.code }).subscribe({
+    this.auth.verifyEmail({ email, code }).subscribe({
       next: () => {
         this.loading = false;
         this.message = 'E-mail vérifié avec succès.';
@@ -47,16 +56,27 @@ export class VerifyEmailPage implements OnInit {
   }
 
   protected resend(): void {
-    if (!this.email) {
+    const email = this.email.trim();
+
+    if (!email) {
       this.message = 'Veuillez renseigner votre e-mail.';
       return;
     }
 
-    this.auth.resendVerification(this.email).subscribe({
+    if (this.resending) {
+      return;
+    }
+
+    this.resending = true;
+    this.message = '';
+
+    this.auth.resendVerification(email).subscribe({
       next: (response) => {
+        this.resending = false;
         this.message = response?.message ?? 'Un nouveau code a été envoyé.';
       },
       error: (error) => {
+        this.resending = false;
         this.message = this.extractMessage(error, 'Impossible d’envoyer un nouveau code.');
       }
     });

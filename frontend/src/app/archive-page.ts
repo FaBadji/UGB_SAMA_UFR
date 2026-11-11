@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AcademicDocumentsService } from './academic-documents.service';
 import { toAcademicDocumentCards, type AcademicDocumentCard } from './academic-document-card';
+import { AuthService } from './auth.service';
 
 type ArchiveType = 'schedule' | 'deliberations';
 
@@ -12,6 +13,7 @@ type ArchiveType = 'schedule' | 'deliberations';
   styleUrls: ['./schedule-page.css', './archive-page.css']
 })
 export class ArchivePage implements OnInit {
+  private readonly auth = inject(AuthService);
   private readonly documentsApi = inject(AcademicDocumentsService);
   private archives: AcademicDocumentCard[] = [];
   private searchTerm = '';
@@ -89,5 +91,13 @@ export class ArchivePage implements OnInit {
             .some((value) => value.toLocaleLowerCase().includes(this.searchTerm))
         )
       : this.archives;
+  }
+
+  protected logout(): void {
+    this.auth.logout().subscribe({
+      error: () => {
+        // La navigation vers /connexion se fait déjà via routerLink sur le lien.
+      },
+    });
   }
 }

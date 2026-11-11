@@ -7,6 +7,9 @@ interface AuthResponse {
   access_token?: string;
   user?: User;
   message?: string;
+  requires_email_verification?: boolean;
+  verification_email_sent?: boolean;
+  email_verified?: boolean;
   [key: string]: unknown;
 }
 
@@ -98,12 +101,15 @@ export class AuthService {
     const token = (response.token ?? response.access_token) as string | undefined;
     const user = response.user as User | undefined;
 
-    if (token) {
-      try {
-        localStorage.setItem(TOKEN_KEY, token);
-      } catch {
-        // Ignore storage failures.
-      }
+    // Registration does not issue a token until the e-mail is verified.
+    if (!token) {
+      return;
+    }
+
+    try {
+      localStorage.setItem(TOKEN_KEY, token);
+    } catch {
+      // Ignore storage failures.
     }
 
     if (user) {

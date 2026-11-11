@@ -4,15 +4,19 @@
 
 .login-page {
   min-height: 100vh;
-  padding: 18px 24px 0;
-  background: #f6f9fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 24px;
+  background:
+    linear-gradient(rgb(20 20 20 / 12%), rgb(20 20 20 / 12%)),
+    url('/images/campus-palmiers.jpg') center / cover no-repeat;
 }
 
 .login-scene {
   width: min(100%, 1120px);
   min-height: 622px;
   margin: 0 auto;
-  background: url('/images/campus-palmiers.jpg') center / cover no-repeat;
 }
 
 .top-campus {
@@ -79,7 +83,7 @@
 }
 
 .login-form h2 {
-  margin: 0 0 19px;
+  margin: 0 0 32px;
   color: #a65327;
   font-size: 22px;
   font-weight: 600;
@@ -165,7 +169,7 @@
 
 @media (max-width: 560px) {
   .login-page {
-    padding: 12px 14px 0;
+    padding: 12px 14px;
   }
 
   .login-scene {

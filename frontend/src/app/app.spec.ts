@@ -1,5 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  ActivatedRouteSnapshot,
+  provideRouter,
+  RouterStateSnapshot,
+  UrlTree
+} from '@angular/router';
 import { of } from 'rxjs';
 import { HomePage } from './app';
 import { RegistrationPage } from './registration-page';
@@ -10,6 +16,7 @@ import { DeliberationPage } from './deliberation-page';
 import { ArchivePage } from './archive-page';
 import { AcademicDocumentsService, type AcademicDocument, type AcademicDocumentFilters } from './academic-documents.service';
 import { routes } from './app.routes';
+import { authGuard } from './auth.guard';
 
 const scheduleDocuments: AcademicDocument[] = [
   {
@@ -332,3 +339,59 @@ describe('ArchivePage', () => {
     expect(routes.find((route) => route.path === 'archives')?.component).toBe(ArchivePage);
   });
 });
+
+describe('authGuard', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes), provideHttpClient()]
+    });
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('should protect every application route with the auth guard', () => {
+    const privatePaths = ['dashboard', 'emploi-du-temps', 'deliberation', 'archives'];
+
+    for (const path of privatePaths) {
+      expect(routes.find((route) => route.path === path)?.canActivate).toContain(authGuard);
+    }
+  });
+
+  it('should leave registration, login, and account recovery routes public', () => {
+    const publicPaths = [
+      '',
+      'inscription',
+      'connexion',
+      'verification-email',
+      'mot-de-passe-oublie',
+      'reinitialiser-mot-de-passe'
+    ];
+
+    for (const path of publicPaths) {
+      expect(routes.find((route) => route.path === path)?.canActivate).toBeUndefined();
+    }
+  });
+
+  it('should redirect unauthenticated users to the login page', () => {
+    const result = TestBed.runInInjectionContext(() =>
+      authGuard({} as ActivatedRouteSnapshot, { url: '/dashboard' } as RouterStateSnapshot)
+    );
+
+    expect(result instanceof UrlTree).toBe(true);
+    expect((result as UrlTree).toString()).toBe('/connexion');
+  });
+
+  it('should allow authenticated users to access application routes', () => {
+    localStorage.setItem('sama_ufr_token', 'test-token');
+
+    const result = TestBed.runInInjectionContext(() =>
+      authGuard({} as ActivatedRouteSnapshot, { url: '/dashboard' } as RouterStateSnapshot)
+    );
+
+    expect(result).toBe(true);
+  });
+});
+

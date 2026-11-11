@@ -4,19 +4,22 @@
 
 .registration-page {
   min-height: 100vh;
-  background: #f6f9fb;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(rgb(20 20 20 / 30%), rgb(20 20 20 / 30%)),
+    url('/images/inscription-campus.jpg') center 43% / cover no-repeat;
 }
 
 .registration-stage {
   min-height: 604px;
+  flex: 1;
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   padding: 54px 24px 60px;
   overflow: hidden;
-  background:
-    linear-gradient(rgb(20 20 20 / 30%), rgb(20 20 20 / 30%)),
-    url('/images/inscription-campus.jpg') center 43% / cover no-repeat;
 }
 
 .campus-name {
@@ -38,7 +41,7 @@
   min-height: 450px;
   display: grid;
   grid-template-columns: 1.15fr 1fr;
-  margin: 0 auto;
+  margin: clamp(32px, 6vh, 72px) auto 0;
   background: rgb(23 24 24 / 72%);
   color: #fff;
 }
@@ -69,6 +72,9 @@
 .registration-form-side {
   width: min(100%, 360px);
   justify-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: 46px 24px 38px;
 }
 
@@ -188,10 +194,18 @@
 }
 
 @media (max-width: 560px) {
-  .registration-stage {
-    min-height: 650px;
-    padding: 70px 16px 38px;
+  .registration-page {
     background-position: 55% center;
+  }
+
+  .registration-stage {
+    min-height: 700px;
+    align-items: flex-start;
+    padding: 70px 16px 38px;
+  }
+
+  .registration-panel {
+    margin-top: 24px;
   }
 
   .campus-name {

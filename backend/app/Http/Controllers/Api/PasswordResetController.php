@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PasswordResetController
 {
@@ -19,8 +20,9 @@ class PasswordResetController
         if ($user) {
             try {
                 $user->sendPasswordResetCode();
-            } catch (\Throwable $exception) {
-                // Keep response generic so mail issues do not leak account existence.
+            } catch (Throwable $exception) {
+                // Keep the response generic so mail issues do not leak account existence.
+                report($exception);
             }
         }
 
@@ -39,7 +41,7 @@ class PasswordResetController
 
         $user = User::where('email', $data['email'])->firstOrFail();
 
-        if (!$user->resetPasswordWithCode($data['code'], $data['password'])) {
+        if (! $user->resetPasswordWithCode($data['code'], $data['password'])) {
             return response()->json([
                 'message' => 'Code invalide ou expiré.',
             ], 422);

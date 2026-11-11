@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import type { Observable } from 'rxjs';
 import { AcademicDocumentsService, type AcademicDocument, type AcademicDocumentFilters } from './academic-documents.service';
 import { toAcademicDocumentCards, type AcademicDocumentCard } from './academic-document-card';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-schedule-page',
@@ -11,6 +12,8 @@ import { toAcademicDocumentCards, type AcademicDocumentCard } from './academic-d
   styleUrl: './schedule-page.css'
 })
 export class SchedulePage implements OnInit {
+  private readonly auth = inject(AuthService);
+
   protected readonly pageTitle: string = 'Emploi du temps';
   protected readonly availableTitle: string = 'Les emplois du temps disponibles';
   protected readonly documentsApi = inject(AcademicDocumentsService);
@@ -86,5 +89,13 @@ export class SchedulePage implements OnInit {
   private formValue(values: FormData, key: string): string | undefined {
     const value = values.get(key);
     return typeof value === 'string' && value.length > 0 ? value : undefined;
+  }
+
+  protected logout(): void {
+    this.auth.logout().subscribe({
+      error: () => {
+        // La navigation vers /connexion se fait déjà via routerLink sur le lien.
+      },
+    });
   }
 }

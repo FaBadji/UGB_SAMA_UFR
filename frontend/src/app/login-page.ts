@@ -44,6 +44,20 @@ export class LoginPage {
       },
       error: (error) => {
         this.loading.set(false);
+
+        const response = error as {
+          status?: number;
+          error?: { message?: string; requires_email_verification?: boolean };
+          message?: string;
+        };
+
+        if (response.status === 403 && response.error?.requires_email_verification) {
+          this.router.navigate(['/verification-email'], {
+            queryParams: { email, notice: 'unverified' }
+          });
+          return;
+        }
+
         this.message.set(this.extractMessage(error, 'La connexion a échoué.'));
       }
     });
