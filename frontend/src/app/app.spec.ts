@@ -168,7 +168,7 @@ describe('LoginPage', () => {
     expect(routes.find((route) => route.path === 'connexion')?.component).toBe(LoginPage);
   });
 
-  it('should say when login is not connected to a server', async () => {
+  it('should ask for credentials when the form is empty', async () => {
     const fixture = TestBed.createComponent(LoginPage);
     await fixture.whenStable();
     const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
@@ -176,7 +176,7 @@ describe('LoginPage', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.login-message')?.textContent).toContain(
-      'La connexion n’est pas encore reliée au serveur.'
+      'Veuillez renseigner votre e-mail et votre mot de passe.'
     );
   });
 });

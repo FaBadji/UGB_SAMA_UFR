@@ -18,13 +18,14 @@
         </svg>
       </button>
       <span class="account-avatar" aria-label="Fatou Ba">FB</span>
-      <a class="logout-button" routerLink="/connexion" aria-label="Se déconnecter">
+      <button class="logout-button" type="button" aria-label="Se déconnecter" (click)="logout()">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M10 17l5-5-5-5M15 12H3M21 3v18" />
         </svg>
-      </a>
+      </button>
     </div>
   </header>
+  <p class="dashboard-error" role="alert" [hidden]="!logoutMessage">{{ logoutMessage }}</p>
 
   <div class="dashboard-content" id="accueil">
     <section class="welcome-banner" aria-label="Bienvenue">

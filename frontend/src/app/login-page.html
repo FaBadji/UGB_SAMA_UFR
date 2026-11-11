@@ -16,8 +16,9 @@
           <input id="login-email" type="email" name="email" autocomplete="email" placeholder="Email" required />
           <label class="sr-only" for="login-password">Mot de passe</label>
           <input id="login-password" type="password" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
-          <button type="submit">Connexion</button>
-          <p class="login-message" aria-live="polite">{{ message }}</p>
+          <button type="submit" [disabled]="loading()">{{ loading() ? 'Envoi...' : 'Connexion' }}</button>
+          <p class="login-forgot"><a routerLink="/mot-de-passe-oublie">Mot de passe oublié ?</a></p>
+          <p class="login-message" aria-live="polite">{{ message() }}</p>
         </form>
         <p class="register-prompt">Pas de compte ? <a routerLink="/inscription">Inscription</a></p>
       </div>

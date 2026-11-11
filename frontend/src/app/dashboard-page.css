@@ -21,6 +21,14 @@
   background: #fff;
 }
 
+.dashboard-error {
+  margin: 0;
+  padding: 8px 6.2%;
+  background: #fff;
+  color: #b42318;
+  font-size: 12px;
+}
+
 .dashboard-brand {
   width: 42px;
   height: 42px;

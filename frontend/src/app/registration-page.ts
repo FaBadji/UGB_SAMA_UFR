@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-registration-page',
@@ -8,19 +10,66 @@ import { RouterLink } from '@angular/router';
   styleUrl: './registration-page.css'
 })
 export class RegistrationPage {
-  protected message = '';
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  protected readonly message = signal('');
+  protected readonly loading = signal(false);
 
   protected register(event: SubmitEvent): void {
     event.preventDefault();
 
     const form = event.currentTarget as HTMLFormElement;
     const data = new FormData(form);
+    const password = String(data.get('password') ?? '');
+    const confirmation = String(data.get('passwordConfirmation') ?? '');
 
-    if (data.get('password') !== data.get('passwordConfirmation')) {
-      this.message = 'Les mots de passe ne correspondent pas.';
+    if (password !== confirmation) {
+      this.message.set('Les mots de passe ne correspondent pas.');
       return;
     }
 
-    this.message = 'La création de compte n’est pas encore connectée.';
+    this.loading.set(true);
+    this.message.set('');
+
+    this.auth.register({
+      email: String(data.get('email') ?? ''),
+      password,
+      password_confirmation: confirmation,
+      filiere: String(data.get('filiere') ?? '')
+    }).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+        const email = String(data.get('email') ?? '');
+        if (response?.user?.email_verified_at) {
+          this.message.set('Inscription réussie. Votre compte est prêt à être utilisé.');
+          setTimeout(() => this.router.navigateByUrl('/connexion'), 1200);
+        } else {
+          this.message.set('Inscription réussie. Un code de vérification a été envoyé à votre adresse e-mail.');
+          setTimeout(() => this.router.navigate(['/verification-email'], { queryParams: { email } }), 1200);
+        }
+      },
+      error: (error) => {
+        this.loading.set(false);
+        this.message.set(this.extractMessage(error, 'La création de compte a échoué.'));
+      }
+    });
+  }
+
+  private extractMessage(error: unknown, fallback: string): string {
+    const response = error as {
+      error?: { message?: string; errors?: Record<string, string[]> };
+      message?: string;
+    };
+
+    const validationErrors = response?.error?.errors;
+    if (validationErrors) {
+      const firstError = Object.values(validationErrors)[0];
+      if (Array.isArray(firstError) && firstError.length > 0) {
+        return firstError[0];
+      }
+    }
+
+    return response?.error?.message ?? response?.message ?? fallback;
   }
 }

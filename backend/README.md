@@ -18,15 +18,22 @@ frontend:
 - Each collection's `/{id}/pdf` and `/{id}/telecharger` routes preview or
   download an existing PDF.
 
-Set `DB_CONNECTION=pgsql`, `DB_DATABASE=sama_ufr`, and the local PostgreSQL
-username/password in `.env`. Do not share credentials. After verifying the
-target database, run `php artisan migrate`; the migrations create the three
-academic-document tables and do not create user, password-reset, or session
-tables. Store PDFs on Laravel's `public` disk (`storage/app/public`) and save
-their relative paths in `fichier_pdf`.
+The default `.env.example` configuration uses the included SQLite database at
+`database/database.sqlite`, so no database server or credentials are required
+for local development. Copy `.env.example` to `.env` if needed, generate the
+application key with `php artisan key:generate`, then run `php artisan migrate`.
+The migrations create the account, password-reset, session, API-token, and
+academic-document tables. To use PostgreSQL instead, set `DB_CONNECTION=pgsql`
+and configure the host, database, username, and password for your own server.
+Do not share credentials. Store PDFs on Laravel's `public` disk
+(`storage/app/public`) and save their relative paths in `fichier_pdf`.
 
 Run the backend with `php artisan serve`. The frontend development proxy forwards
 `/api` requests to `http://127.0.0.1:8000`.
+
+Run the frontend in a second terminal from `frontend/` with `npm start`, then
+open `http://localhost:4200`. Authentication requests and document endpoints
+use the same-origin `/api` proxy.
 
 ## About Laravel
 
