@@ -41,6 +41,7 @@ export class RegistrationPage {
       next: (response) => {
         this.loading.set(false);
         const email = String(data.get('email') ?? '');
+        this.auth.setPendingVerificationEmail(email);
 
         if (response?.requires_email_verification) {
           this.message.set(response.verification_email_sent === false

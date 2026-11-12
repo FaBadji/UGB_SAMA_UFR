@@ -52,6 +52,7 @@ export class LoginPage {
         };
 
         if (response.status === 403 && response.error?.requires_email_verification) {
+          this.auth.setPendingVerificationEmail(email);
           this.router.navigate(['/verification-email'], {
             queryParams: { email, notice: 'unverified' }
           });

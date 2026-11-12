@@ -24,6 +24,7 @@ interface User {
 const API_URL = '/api';
 const TOKEN_KEY = 'sama_ufr_token';
 const USER_KEY = 'sama_ufr_user';
+const PENDING_EMAIL_KEY = 'sama_ufr_pending_email';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -91,10 +92,36 @@ export class AuthService {
     try {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(PENDING_EMAIL_KEY);
     } catch {
       // Ignore storage failures.
     }
     this.user.set(null);
+  }
+
+  /** Adresse e-mail en attente de vérification (émise à l'inscription / connexion). */
+  setPendingVerificationEmail(email: string): void {
+    try {
+      localStorage.setItem(PENDING_EMAIL_KEY, email);
+    } catch {
+      // Ignore storage failures.
+    }
+  }
+
+  getPendingVerificationEmail(): string | null {
+    try {
+      return localStorage.getItem(PENDING_EMAIL_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  clearPendingVerificationEmail(): void {
+    try {
+      localStorage.removeItem(PENDING_EMAIL_KEY);
+    } catch {
+      // Ignore storage failures.
+    }
   }
 
   private saveSession(response: AuthResponse): void {
